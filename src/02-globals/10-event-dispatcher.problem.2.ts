@@ -1,10 +1,11 @@
 import { expect, it } from "vitest";
 
-/**
- * How do we add a LOG_OUT and UPDATE_USERNAME events to the
- * DispatchableEvent interface from WITHIN
- * this file?
- */
+declare global {
+  interface DispatchableEvent {
+    LOG_OUT: {};
+    UPDATE_USERNAME: { username: string };
+  }
+}
 
 const handler = (event: UnionOfDispatchableEvents) => {
   switch (event.type) {
