@@ -15,14 +15,7 @@ interface Post {
   title: string;
 }
 
-/**
- * Change this type definition! We should be able to
- * add users and posts to the db by their id.
- *
- * You'll need an index signature of some kind - or maybe
- * two!
- */
-const db: Record<string, User | Post> = {};
+const db: { [K: UserId]: User; [K: PostId]: Post } = {};
 
 it("Should let you add users and posts to the db by their id", () => {
   const postId = "post_1" as PostId;
@@ -46,7 +39,7 @@ it("Should let you add users and posts to the db by their id", () => {
 
     type tests = [
       Expect<Equal<typeof post, Post>>,
-      Expect<Equal<typeof user, User>>,
+      Expect<Equal<typeof user, User>>
     ];
   };
 });
