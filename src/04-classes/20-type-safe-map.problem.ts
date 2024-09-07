@@ -1,13 +1,11 @@
 import { expect, it } from "vitest";
 
-/**
- * In this problem, we need to type the return type of the set()
- * method to make it add keys to the TMap generic.
- *
- * In the return type of set(), we'll need to modify the TMap
- * generic to add the new key/value pair.
- */
-
+// I'm rather underwhelmed with this builder pattern for types. The issue
+// is if you must always reassign to a variable otherwise you lose the type
+// info. For example:
+//   const map = new TypeSafeStringMap().set("hi", "there");
+//   map.set("oh", "no");
+//   map.get("oh")  // Compiler complains
 class TypeSafeStringMap<TMap extends Record<string, string> = {}> {
   private map: TMap;
   constructor() {
@@ -18,7 +16,10 @@ class TypeSafeStringMap<TMap extends Record<string, string> = {}> {
     return this.map[key];
   }
 
-  set<K extends string>(key: K, value: string): unknown {
+  set<K extends string>(
+    key: K,
+    value: string
+  ): TypeSafeStringMap<TMap & Record<K, string>> {
     (this.map[key] as any) = value;
 
     return this;
@@ -33,7 +34,7 @@ const map = new TypeSafeStringMap()
 it("Should not allow getting values which do not exist", () => {
   map.get(
     // @ts-expect-error
-    "jim",
+    "jim"
   );
 });
 
