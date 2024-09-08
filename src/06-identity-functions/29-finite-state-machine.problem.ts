@@ -1,13 +1,5 @@
-type NoInfer<T> = [T][T extends any ? 0 : never];
-
-/**
- * Clue: NoInfer is part of the solution!
- *
- * You'll need to modify the interface below
- * to get it to work.
- */
 interface FSMConfig<TState extends string> {
-  initial: TState;
+  initial: NoInfer<TState>;
   states: Record<
     TState,
     {
@@ -17,7 +9,7 @@ interface FSMConfig<TState extends string> {
 }
 
 export const makeFiniteStateMachine = <TState extends string>(
-  config: FSMConfig<TState>,
+  config: FSMConfig<TState>
 ) => config;
 
 const config = makeFiniteStateMachine({
