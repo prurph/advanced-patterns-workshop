@@ -1,7 +1,6 @@
 import { expect, it } from "vitest";
 import { Equal, Expect } from "../helpers/type-utils";
 
-// Clue - this will be needed!
 type PayloadsToDiscriminatedUnion<T extends Record<string, any>> = {
   [K in keyof T]: { type: K } & T[K];
 }[keyof T];
@@ -17,24 +16,28 @@ type TestingPayloadsToDiscriminatedUnion = PayloadsToDiscriminatedUnion<{
   LOG_OUT: {};
 }>;
 
-/**
- * Clue:
- *
- * You'll need to add two generics here!
- */
-export class DynamicReducer {
-  private handlers = {} as unknown;
+export class DynamicReducer<
+  TState,
+  THandlers extends Record<string, any> = {}
+> {
+  private handlers = {} as Record<
+    string,
+    (state: TState, payload: any) => TState
+  >;
 
-  addHandler(
-    type: unknown,
-    handler: (state: unknown, payload: unknown) => unknown
-  ): unknown {
+  addHandler<TType extends string, TPayload extends object>(
+    type: TType,
+    handler: (state: TState, payload: TPayload) => TState
+  ): DynamicReducer<TState, THandlers & Record<TType, TPayload>> {
     this.handlers[type] = handler;
 
     return this;
   }
 
-  reduce(state: unknown, action: unknown): unknown {
+  reduce(
+    state: TState,
+    action: PayloadsToDiscriminatedUnion<THandlers>
+  ): TState {
     const handler = this.handlers[action.type];
     if (!handler) {
       return state;
