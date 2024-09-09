@@ -3,13 +3,13 @@ import { it } from "vitest";
 import { z, ZodError } from "zod";
 import { Equal, Expect } from "../helpers/type-utils";
 
-const makeTypeSafeHandler = (
+const makeTypeSafeHandler = <Q = any, B extends Record<string, any> = any>(
   config: {
-    query?: z.Schema;
-    body?: z.Schema;
+    query?: z.Schema<Q>;
+    body?: z.Schema<B>;
   },
-  handler: RequestHandler
-): RequestHandler => {
+  handler: RequestHandler<any, any, B, Q>
+): RequestHandler<any, any, B, Q> => {
   return (req, res, next) => {
     const { query, body } = req;
     if (config.query) {
