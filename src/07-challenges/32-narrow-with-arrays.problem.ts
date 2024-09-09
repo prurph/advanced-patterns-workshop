@@ -5,9 +5,13 @@ interface Fruit {
   price: number;
 }
 
-export const wrapFruit = (fruits: unknown[]) => {
-  const getFruit = (name: unknown) => {
-    return fruits.find((fruit) => fruit.name === name);
+// Wow this one is hard. Never would've gotten it myself.
+export const wrapFruit = <const F extends readonly Fruit[]>(fruits: F) => {
+  const getFruit = <N extends F[number]["name"]>(name: N) => {
+    return fruits.find((fruit) => fruit.name === name) as Extract<
+      F[number],
+      { name: N }
+    >;
   };
 
   return {
