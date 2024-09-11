@@ -9,5 +9,14 @@ import React from "react";
  * The JSX namespace comes from React - you'll need
  * to check out React's type definitions.
  */
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            ["custom-element"]: {
+                children?: React.ReactNode;
+            }
+        }    
+    }
+}
 
 const element = <custom-element>hello world</custom-element>;
